@@ -1,5 +1,5 @@
-Ethernet MAC library change log
-===============================
+Random library change log
+=========================
 
 1.0.0
 -----
