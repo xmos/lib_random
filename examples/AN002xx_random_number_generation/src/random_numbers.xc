@@ -10,7 +10,15 @@
 #define MAXY 256
 #define MAXBITS (MAXX * MAXY)
 
-unsigned char bits[MAXBITS];
+unsigned char thebits[MAXBITS/8];
+
+unsigned int getbit(int i) {
+    return (thebits[i>>3] >> (i&7)) & 1;
+}
+
+unsigned int setbit(int i) {
+    return thebits[i>>3] |= 1 << (i&7);
+}
 
 void blocktest(int n) {
     int hist[256];
@@ -20,7 +28,7 @@ void blocktest(int n) {
     for(int i = 0; i < MAXBITS - n; i++) {
         int val = 0;
         for(int j = 0; j < n; j++) {
-            val = val << 1 | bits[i+j];
+            val = val << 1 | getbit(i+j);
         }
         hist[val]++;
     }
@@ -39,7 +47,7 @@ void runtest() {
         hist[i] = 0;
     }
     for(int i = 0; i < MAXBITS; i++) {
-        if(bits[i] == old) {
+        if(getbit(i) == old) {
             run++;
         } else {
             hist[run]++;
@@ -69,7 +77,7 @@ void xmain(void) {
             tmr when timerafter(t0 + 10 + 0 * rand) :> void;
         } else {
             for(int i = 0; i < n && sum < MAXBITS; i++) {
-                bits[sum] = rand & 1;
+                setbit(sum, rand & 1);
                 rand >>= 1;
                 sum++;
             }
