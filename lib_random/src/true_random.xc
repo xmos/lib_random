@@ -4,60 +4,45 @@
 #include <xclib.h>
 #include "random.h"
 
-#define MIN_RANDOM_BITS 12
+#define MIN_RANDOM_BITS 8
 
-{int,int} static getro() {
-    int time;
-    setps(0x60B, 0);
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    asm("nop");
-    short x = getps(0x70B);
-    asm("gettime %0" : "=r" (time));
-    setps(0x60B, 3);
-    return {time, x};
+static void inline ro_on() {
+    setps(0x60B, 2);
 }
 
-static int last_used_time, last_used_ro;
-static unsigned current_ro_per_tick;
-static int scanning = 0;
-static int final_time = 0;
+static void inline ro_off() {
+    setps(0x60B, 0);
+}
+
+
+
+#define TIME_FOR_ONE_BIT 20000
+static int last_time = 0;
 
 void random_true_init() {
-    int time, ro, time2, ro2;
-    timer tmr;
-    {time, ro} = getro();
-    tmr when timerafter(time+5000) :> void;
-    {time2, ro2} = getro();
-    last_used_time = time;
-    last_used_ro = ro;
-    current_ro_per_tick = ((short)(ro2 - last_used_ro)) * 0x10000LL / (time2 - last_used_time);
-    scanning = 1;
+    asm("gettime %0" : "=r" (last_time));
+    ro_on();
 }
 
-static inline int cls(int x) {
-    return x < 0 ? clz(-x) : clz(x);
-}
-
-{uint32_t,uint32_t} random_true_get_bits() {
+{uint32_t,int32_t} random_true_get_bits() {
     int time, ro;
-    {time, ro} = getro();
+
+    ro_off();
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    ro = getps(0x70B);
+    asm("gettime %0" : "=r" (time));
+    ro_on();
     
-    int dtime = time - last_used_time;
-    int expectedro = last_used_ro + ((dtime * (long long) current_ro_per_tick) >> 16);
-    short dro = ro - expectedro;
-    int nbits = 32 - cls(dro) - MIN_RANDOM_BITS;
-    if (scanning) {    
-        if (nbits <= 0) {
-            return {0, 10000};    // called much too early
-        }
-        final_time = time + dtime;
-        scanning = 0;
-        return {0, dtime};    // call again in dtime;
-    } else if ((time - final_time) > 0) {
-        random_true_init();
-        return {nbits, dro & (1 << nbits) - 1};
+    if (((unsigned)(time - last_time)) > TIME_FOR_ONE_BIT) {
+        last_time = time;
+        return {1, ro & 1};
     }
-    return {0,final_time - time};
+    return {0, last_time + TIME_FOR_ONE_BIT};
+}
+
+void random_true_uninit() {
+    ro_off();
 }

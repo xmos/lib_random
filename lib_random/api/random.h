@@ -49,15 +49,34 @@ void random_get_random_bytes(REFERENCE_PARAM(random_generator_t, g), uint8_t in_
 
 #ifdef __XC__
 /** Function that produces a number of random bits. It returns two
- * integers, the number of random bits, and the actual random bits. At most
- * 16 random bits are returned. To get a large number of random bits this
- * function should be called regularly. Calling it too quickly since a
- * previous call will return 0.
+ * integers.
  *
- * \returns Number of bits, and random bits.
+ * If random bits are available, then it returns the number of random bits,
+ * and the actual random bits.
+ *
+ * If no random bits are available, then it returns 0 (for no random bits)
+ * and the time in ticks at which new bits are available. The code can wait
+ * for this time (for example in a select statement), and then collect the
+ * random bits.
+ * 
+ * At most 16 random bits are returned. To get a large number of random
+ * bits this function should be called regularly. Calling it too quickly
+ * since a previous call will return 0.
+ *
+ * \returns Number of bits, and random bits, or 0 and timestamp in the future.
  */
-{uint32_t,uint32_t} random_true_get_bits();
+{uint32_t,int32_t} random_true_get_bits();
+
+/** Function that initialises the true random number generator. Calling
+ * this function will start the free running oscillator. This will take a
+ * bit of extra power.
+ */
 void random_true_init();
+
+/** Function that uninitialises the true random number generator. This will
+ * stop the ring oscillator, and reduce the power foot print a little.
+ */
+void random_true_uninit();
 #endif
 
 #endif // __RANDOM_H__
