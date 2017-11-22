@@ -15,7 +15,7 @@ include the ``random.h`` header.
 Known Issues
 ------------
 
-There are no known issues with this library.
-
+The deprecated random_create_generator_from_hw_seed() functionality will not work corrrectly
+along side random_bit.h (and hence random_pool.h and random_prng.h)
 
 .. include:: ../../../CHANGELOG.rst
