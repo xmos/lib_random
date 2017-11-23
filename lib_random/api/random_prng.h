@@ -58,13 +58,13 @@ typedef enum {prng57=2, prng88=3, prng113=4} PrngSize;
  *      server-client pair with a unique seed.
  *
  * \param prngi     Server end of an `interface random_PRNG`.
- * \param rpi       Client end of an `interface random_pool`.
+ * \param rpi       Client end of an `interface random_pool`, null if perturbe_*() is never called.
  * \param prngSize  Either 'prng57', 'prng88' or 'prng113'.
  * \param seed      Optional seed for the PRNG (or null)
  *                  N.B. each seed[] entry must be > 127, the default value is 128.
  */
 [[distributable]]
-void random_prng_server(server interface random_prng prngi, client interface random_pool rpi,
+void random_prng_server(server interface random_prng prngi, client interface random_pool ?rpi,
                         static const PrngSize prngSize, uint32_t (&?seed)[prngSize]);
 
 #endif // __RANDOM_PRNG_H__

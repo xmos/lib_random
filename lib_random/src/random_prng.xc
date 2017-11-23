@@ -106,7 +106,7 @@ static size_t perturbe(uint32_t state[prngSize], static const size_t prngSize,
 }
 
 [[distributable]]
-void random_prng_server(server interface random_prng prngi, client interface random_pool rpi,
+void random_prng_server(server interface random_prng prngi, client interface random_pool ?rpi,
                         static const PrngSize prngSize, uint32_t (&?seed)[prngSize]) {
 
   xassert(prngSize >= prng57 && prngSize <= prng113); // "Invalid prngSize".

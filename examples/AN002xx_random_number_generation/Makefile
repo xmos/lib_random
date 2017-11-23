@@ -3,7 +3,6 @@ APP_NAME =
 USED_MODULES = lib_random
 
 XCC_FLAGS = -O2 -g -Wunused -fxscope
-XCORE_ARM_PROJECT = 0
 VERBOSE = 0
 
 XMOS_MAKE_PATH ?= ../..
