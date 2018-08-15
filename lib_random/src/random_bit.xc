@@ -3,6 +3,14 @@
 #include "hwlock.h"
 #include "random_impl.h"
 
+#if __XS2__
+#  include "xs2a_registers.h"
+#else
+#  include "xs1b_registers.h"
+#  define XS1_PS_RING_OSC_CTRL   XS1_L_PS_RING_OSC_CTRL
+#  define XS1_PS_RING_OSC_DATA0  XS1_L_PS_RING_OSC_DATA0
+#endif
+
 // Optional thread protection...
 
 #define LOAD32(dst, ptr)       asm("ldw %0, %1[0]"  : "=r"(dst) : "r"(ptr));
@@ -38,11 +46,11 @@ void random_bit_start() {
   timer tmr;
   tmr :> last_time;
   STORE32(last_time, &per_tile_last_time);
-  setps(0x60B, 2);
+  setps(XS1_PS_RING_OSC_CTRL, 2);
 }
 
 void random_bit_stop() {
-  setps(0x60B, 0);
+  setps(XS1_PS_RING_OSC_CTRL, 0);
 }
 
 uint32_t random_bit(uint32_t &bit_time) {
@@ -58,8 +66,8 @@ uint32_t random_bit(uint32_t &bit_time) {
     asm("nop");
     asm("nop");
     asm("nop");
-    asm("nop");
-    bit_time = getps(0x70B);
+    asm("nop"); // Allow the data to stabilise.
+    bit_time = getps(XS1_PS_RING_OSC_DATA0);
     random_bit_start();
     bit_time &=1;
     return 1;

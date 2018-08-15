@@ -1,10 +1,5 @@
 MODULE_XCC_FLAGS = -g -Os
 #MODULE_XCC_FLAGS += -save-temps -v
 
-# Enable deprecated features
-ifneq ($(RANDOM_ENABLE_HW_SEED),)
-MODULE_XCC_FLAGS += -DRANDOM_ENABLE_HW_SEED=$(RANDOM_ENABLE_HW_SEED)
-endif
-
 DEPENDENT_MODULES = lib_locks lib_xassert
 VERSION = 1.1.0
