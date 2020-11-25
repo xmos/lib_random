@@ -1,0 +1,11 @@
+This is a wrapper for testing the quality of the PRNG using dieharder.
+http://webhome.phy.duke.edu/~rgb/General/dieharder.php
+
+It is slow as it runs the random_prng.h library code under simulation.
+
+If this is a problem, copy the lfsr57(), lfsr88(), & lfsr113() functions
+into a host application and run nativly, viz test just the algorithm!
+
+The expected usage is:
+   axe --args bin/dieharder.xe -g prng57 -n -1 -o - -B | dieharder -g 200 -a
+(see dieharder.xe and dieharder help files for details)

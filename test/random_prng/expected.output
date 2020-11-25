@@ -1,0 +1,16 @@
+Task-pool-client0 available=0 capacity=15
+Task-pool-client1 available=0 capacity=15
+subtask-A raw -     16C800B3 279E25
+subtask-A half 0     3589669D 4AF41D37
+Task-pool-client1 available=0 capacity=15
+Exit Task-pool-client1
+subtask-A nonblocking 2     7461669 8ABA72F6
+subtask-A blocking 1     8EDBF15A 2C5DF060
+Exit subtask-A
+subtask-B raw -     505F0BD9 35375D85
+subtask-B half 0     783D9EC4 B0C1B1A0
+subtask-B nonblocking 2     47AE1A01 95AB4431
+subtask-B blocking 1     20AB0D85 B0E484A6
+Exit subtask-B
+Exit Task-pool-client0
+Exit Task-pool-server
