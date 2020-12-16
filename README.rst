@@ -1,12 +1,8 @@
 Random Number Generation
 ========================
 
-.. rheader::
-
-   Random Number |version|
-
 Random Number Library
---------------------
+---------------------
 
 This library provides both hardware and software random number generation.
 
@@ -24,4 +20,5 @@ Components
 Software version and dependencies
 .................................
 
-.. libdeps::
+The CHANGELOG contains information about the current and previous versions.
+For a list of direct dependencies, look for DEPENDENT_MODULES in lib_random/module_build_info.
