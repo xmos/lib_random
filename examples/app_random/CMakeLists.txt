@@ -4,7 +4,7 @@ project(app_random)
 
 set(APP_HW_TARGET XK-EVK-XU316)
 
-include(${CMAKE_CURRENT_LIST_DIR}/../../deps.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../deps.cmake)
 
 set(XMOS_SANDBOX_DIR ${CMAKE_CURRENT_LIST_DIR}/../../..)
 
