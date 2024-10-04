@@ -9,7 +9,7 @@ lib_random: Random Number Generation
 :scope: General Use
 :description: Random number generation
 :category: General Purpose
-:keywords: Random
+:keywords: random
 :devices: xcore.ai, xcore-200
 
 *******
