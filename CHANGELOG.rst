@@ -1,10 +1,11 @@
 lib_random change log
 =====================
 
-UNRELEASED
-----------
+1.2.0
+-----
 
-  * ADDED:   Example application
+  * CHANGED: Documentation improvements
+  * ADDED:   Example application demonstrating basic usage
   * ADDED:   Support for XCommon CMake
 
 1.1.0
