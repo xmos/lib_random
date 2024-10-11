@@ -9,7 +9,7 @@ Introduction
 
 This library provides both hardware and software random number generation.
 
-Hardware based generation uses an asynchronous timer in the `xcore` device.
+Hardware based generation uses an asynchronous oscillator in the `xcore` device.
 
 *****
 Usage
