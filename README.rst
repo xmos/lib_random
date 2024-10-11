@@ -5,7 +5,7 @@ lib_random: Random Number Generation
 ####################################
 
 :vendor: XMOS
-:version: 1.1.0
+:version: 1.2.0
 :scope: General Use
 :description: Random number generation
 :category: General Purpose
@@ -22,8 +22,9 @@ This library provides random number generation.
 Features
 ********
 
-  * Randomness can be seeded by software or hardware
-  * Generate a single value or populate an array with random data
+  * Software and hardware based randomness
+  * Single single value and array generation
+  * Example application demonstrating usage
 
 ************
 Known Issues

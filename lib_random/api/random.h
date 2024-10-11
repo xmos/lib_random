@@ -1,18 +1,11 @@
-// Copyright 2016-2021 XMOS LIMITED.
+// Copyright 2016-2024 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
-#ifndef __RANDOM_H__
-#define __RANDOM_H__
+#ifndef _RANDOM_H_
+#define _RANDOM_H_
 
 #include <stdint.h>
 #include <stddef.h>
-
-#ifndef REFERENCE_PARAM
-#ifdef __XC__
-#define REFERENCE_PARAM(type, name) type &name
-#else
-#define REFERENCE_PARAM(type, name) type *name
-#endif
-#endif
+#include <xccompat.h>
 
 /** Type representing a random number generator.
  */
@@ -25,7 +18,6 @@ typedef unsigned random_generator_t;
  * \returns     a random number generator.
  */
 random_generator_t random_create_generator_from_seed(unsigned seed);
-
 
 /** Function that attempts to create a random number generator from
  *  a true random value into the seed, using
@@ -43,9 +35,8 @@ random_generator_t random_create_generator_from_hw_seed(void);
  *
  *  \returns    a random 32 bit number.
  */
-unsigned
-random_get_random_number(REFERENCE_PARAM(random_generator_t, g));
+unsigned random_get_random_number(REFERENCE_PARAM(random_generator_t, g));
 
 void random_get_random_bytes(REFERENCE_PARAM(random_generator_t, g), uint8_t in_buffer[], size_t byte_count);
 
-#endif // __RANDOM_H__
+#endif // _RANDOM_H_
