@@ -1,24 +1,58 @@
-Random Number Generation
-========================
+:orphan:
 
-Random Number Library
----------------------
+####################################
+lib_random: Random Number Generation
+####################################
 
-This library provides both hardware and software random number generation.
+:vendor: XMOS
+:version: 1.1.0
+:scope: General Use
+:description: Random number generation
+:category: General Purpose
+:keywords: random
+:devices: xcore.ai, xcore-200
 
+*******
+Summary
+*******
+
+This library provides random number generation.
+
+********
 Features
-........
+********
 
-  * Software & hardware random number generation
+  * Randomness can be seeded by software or hardware
+  * Generate a single value or populate an array with random data
 
-Components
-...........
+************
+Known Issues
+************
 
- * Software random number generator
- * Hardware random number generator
+  * None
 
-Software version and dependencies
-.................................
+**************
+Required Tools
+**************
 
-The CHANGELOG contains information about the current and previous versions.
-For a list of direct dependencies, look for DEPENDENT_MODULES in lib_random/module_build_info.
+  * XMOS XTC Tools: 15.3.0
+
+*********************************
+Required Libraries (dependencies)
+*********************************
+
+  * None
+
+*************************
+Related Application Notes
+*************************
+
+The following application notes use this library:
+
+  * None
+
+*******
+Support
+*******
+
+This package is supported by XMOS Ltd. Issues can be raised against the software at: http://www.xmos.com/support
