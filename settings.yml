@@ -1,9 +1,9 @@
 # This file relates to internal XMOS infrastructure and should be ignored by external users
-
+---
 lib_name: lib_random
 project: '{{lib_name}}'
-title: '{{lib_name}}: Random Number Generation'
-version: 2.3.2
+title: '{{lib_name}}: Random number generation'
+version: 1.2.0
 
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
@@ -11,7 +11,7 @@ documentation:
   linkcheck_ignore_regex: ['']
   cognidox_part_number: XM-011312-UG
   doxygen_projects:
-    lib_xud:
+    lib_random:
       doxyfile_path: doc/Doxyfile.inc
   pdfs:
     doc/rst/lib_random.rst:

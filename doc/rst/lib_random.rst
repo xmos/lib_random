@@ -1,6 +1,6 @@
 
 ####################################
-lib_random: Random Number Generation
+lib_random: Random number generation
 ####################################
 
 ************
@@ -27,7 +27,7 @@ An application should then the ``random.h`` header file::
 Example
 *******
 
-An example demonstrating how to generate random values using the ``lib_random`` library is provide
+An example demonstrating how to generate random values using the ``lib_random`` library is provided
 in `examples/app_random`
 
 It shows the two different methods for initialising a random number generator (software or hardware
