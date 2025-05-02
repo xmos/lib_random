@@ -5,7 +5,7 @@
 #include "random.h"
 
 #define RAND_SEED (8369)
-#define RAND_BUF_LEN (4)
+#define RAND_BUF_LEN (8)
 
 int main() {
     // Create a generator with a software seed
@@ -25,6 +25,16 @@ int main() {
     for (int idx = 0; idx < RAND_BUF_LEN; ++idx) {
         printuintln(rand_buf[idx]);
     }
+
+    for (int i = 0; i < 10; ++i) {
+        int bit;
+        do {
+            bit = random_ro_get_bit();
+            // You could sleep here for -bit timer ticks.
+        } while(bit < 0);
+        printint(bit);
+    }
+    printstr(" Done\n");
 
     return 0;
 }

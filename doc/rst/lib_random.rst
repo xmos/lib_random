@@ -49,6 +49,51 @@ To run the application using the simulator, run the following command::
 
 The random data values will be printed in the terminal.
 
+*************
+API reference
+*************
+
+There are two random-number APIs available, one API that creates fast pseudo-random
+numbers using a linear-feedback-shift register, one that slowly creates
+random bits. A third API enables you to switch the ring oscillator off.
+
+=============
+Pseudo random
+=============
+
+The Pseudo random number generator uses a 32-bit LFSR to generate a pseudo
+random string of random bits. This has known weaknesses but is exceedingly
+fast. It comprises the following functions:
+
+.. doxygenfunction:: random_create_generator_from_seed
+.. doxygenfunction:: random_create_generator_from_hw_seed
+.. doxygenfunction:: random_get_random_number
+.. doxygenfunction:: random_get_random_bytes
+
+======================
+Ring oscillator random
+======================
+
+This interface uses the on-chip ring oscillators to create a random bit
+after some time has elapsed. These bits are notionally true random. The bit
+rate is limited by a constant ``RANDOM_RO_MIN_TIME_FOR_ONE_BIT``. The
+default value is a safe value that should produce random bits in most
+circumstances. You cna lower it in order to generate more random bits per
+second at a risk of introducing correlation.
+
+.. doxygenfunction:: random_ro_init
+.. doxygenfunction:: random_ro_get_bit
+
+============================
+Switching random numbers off
+============================
+
+The random library switches on a ring oscillator on startup. If it is no
+longer required it can be switched off to save some power.
+
+.. doxygenfunction:: random_ro_uninit
+
+   
 |newpage|
 
 .. _sec_further_reading:
