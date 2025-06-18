@@ -78,7 +78,7 @@ This interface uses the on-chip ring oscillators to create a random bit
 after some time has elapsed. These bits are notionally true random. The bit
 rate is limited by a constant ``RANDOM_RO_MIN_TIME_FOR_ONE_BIT``. The
 default value is a safe value that should produce random bits in most
-circumstances. You cna lower it in order to generate more random bits per
+circumstances. You can lower it in order to generate more random bits per
 second at a risk of introducing correlation.
 
 .. doxygenfunction:: random_ro_init

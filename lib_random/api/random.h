@@ -47,13 +47,13 @@ void random_get_random_bytes(REFERENCE_PARAM(random_generator_t, g), uint8_t in_
 #define RANDOM_RO_MIN_TIME_FOR_ONE_BIT 20000
 
 /** Function that may produce a random bit using the ring-oscillator.
- * Before calling this function you must have called random_ro_init.
  *
  * If a random bit is available, then it returns 0 or 1 at random.
  *
  * If no random bits are available, then it returns a negative value which is
  * the time in ticks to wait before the next bit is available.
  *
+ \pre random_ro_init() must be called before invoking this function.
  * \returns Random bit, or the negated time to wait in ticks.
  */
 int random_ro_get_bit();
@@ -64,7 +64,7 @@ int random_ro_get_bit();
  */
 void random_ro_init();
 
-/** Function that stops the ring oscillator, and reduce the power a little.
+/** Function that stops the ring oscillator, slightly reducing overall power consumption.
  */
 void random_ro_uninit();
 
