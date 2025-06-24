@@ -22,35 +22,41 @@ This library provides random number generation.
 Features
 ********
 
-  * Software and hardware based randomness
-  * Single single value and array generation
-  * Example application demonstrating usage
+* Software and hardware based randomness
+* Single single value and array generation
+* Example application demonstrating usage
 
 ************
-Known Issues
+Known issues
 ************
 
-  * None
+* None
+
+****************
+Development repo
+****************
+
+* `lib_random <https://www.github.com/xmos/lib_random>`_
 
 **************
-Required Tools
+Required tools
 **************
 
-  * XMOS XTC Tools: 15.3.0
+* XMOS XTC Tools: 15.3.0
 
 *********************************
-Required Libraries (dependencies)
+Required libraries (dependencies)
 *********************************
 
-  * None
+* None
 
 *************************
-Related Application Notes
+Related application notes
 *************************
 
 The following application notes use this library:
 
-  * None
+* None
 
 *******
 Support

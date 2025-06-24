@@ -1,4 +1,4 @@
-@Library('xmos_jenkins_shared_library@v0.34.0') _
+@Library('xmos_jenkins_shared_library@v0.39.0') _
 
 getApproval()
 
@@ -8,6 +8,7 @@ pipeline {
   }
   environment {
     REPO = 'lib_random'
+    REPO_NAME = 'lib_random'
   }
   options {
     buildDiscarder(xmosDiscardBuildSettings())
@@ -22,21 +23,25 @@ pipeline {
     )
     string(
       name: 'XMOSDOC_VERSION',
-      defaultValue: 'v6.1.3',
+      defaultValue: 'v7.1.0',
       description: 'The xmosdoc version'
+    )
+    string(
+      name: 'INFR_APPS_VERSION',
+      defaultValue: 'v2.1.0',
+      description: 'The infr_apps version'
     )
   }
 
   stages {
     stage('Build') {
       steps {
-        dir("lib_random") {
-          checkout scm
+        dir("${REPO}") {
+          checkoutScmShallow()
 
           withTools(params.TOOLS_VERSION) {
             dir("examples") {
-              sh 'cmake -G "Unix Makefiles" -B build'
-              sh 'xmake -C build'
+              xcoreBuild()
             }
           }
         }
@@ -45,7 +50,7 @@ pipeline {
 
     stage('Library checks') {
       steps {
-        runLibraryChecks("${WORKSPACE}/${REPO}", "v2.0.1")
+        runLibraryChecks("${WORKSPACE}/${REPO}", "${params.INFR_APPS_VERSION}")
       }
     }
 
@@ -54,6 +59,12 @@ pipeline {
         dir("${REPO}") {
           buildDocs()
         }
+      }
+    }
+
+    stage("Archive sandbox"){
+      steps {
+        archiveSandbox(REPO)
       }
     }
 
