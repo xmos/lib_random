@@ -16,7 +16,7 @@ unsigned random_get_random_number(random_generator_t *g)
 
 void random_get_random_bytes(random_generator_t *g, uint8_t in_buffer[], size_t byte_count)
 {
-  for (int i=0; i < byte_count; i++)
+  for (unsigned i=0; i < byte_count; i++)
   {
     in_buffer[i] = (uint8_t)random_get_random_number(g);
   }
