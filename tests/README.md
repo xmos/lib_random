@@ -24,7 +24,9 @@ The test suite covers all public API functions:
 
 ## Building and Running
 
-To build the tests (requires XMOS XTC Tools):
+### xCore Testing (requires XMOS XTC Tools)
+
+To build the tests for xCore hardware:
 
 ```bash
 cd tests
@@ -32,12 +34,29 @@ cmake -G "Unix Makefiles" -B build
 xmake -C build
 ```
 
-To run the tests:
+To run the tests on simulator:
 
 ```bash
 xsim build/bin/test_lib_random.xe
 ```
 
+### Host Testing (for basic validation)
+
+For basic testing without XMOS tools (some tests will be mocked):
+
+```bash
+cd tests/test_lib_random
+cmake -f CMakeLists_host.txt -B build_host
+make -C build_host
+./build_host/test_lib_random_host
+```
+
+Note: Host testing mocks the hardware-specific ring oscillator functions.
+
 ## Test Results
 
 The test suite outputs PASS/FAIL for each individual test and provides a summary at the end. A return code of 0 indicates all tests passed.
+
+## Continuous Integration
+
+Tests are automatically built and verified in the Jenkins CI pipeline alongside the examples.

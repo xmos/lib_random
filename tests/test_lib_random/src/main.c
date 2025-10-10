@@ -3,10 +3,26 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <print.h>
 #include <string.h>
 #include <assert.h>
 #include "random.h"
+
+#ifdef HOST_TEST_BUILD
+#include <stdio.h>
+#include <stdlib.h>
+#define printstr(s) printf("%s", s)
+#define printuintln(n) printf("%u\n", n)
+#define printint(n) printf("%d", n)
+// Mock XMOS hardware functions for host testing
+void random_ro_init() { /* mock */ }
+void random_ro_uninit() { /* mock */ }
+int random_ro_get_bit() { return rand() & 1; } // Simple mock
+random_generator_t random_create_generator_from_hw_seed(void) {
+    return random_create_generator_from_seed((unsigned)rand());
+}
+#else
+#include <print.h>
+#endif
 
 // Test configuration
 #define TEST_SEED (12345)
@@ -155,6 +171,12 @@ void test_random_create_generator_from_hw_seed() {
 void test_random_ro_functions() {
     printstr("\n=== Testing ring oscillator functions ===\n");
     
+#ifdef HOST_TEST_BUILD
+    printstr("Ring oscillator tests skipped in host build\n");
+    TEST_ASSERT(1, "Ring oscillator tests skipped (host build)");
+    return;
+#endif
+    
     // Test initialization
     random_ro_init();
     TEST_ASSERT(1, "Ring oscillator initialization works");
@@ -237,6 +259,11 @@ void print_test_summary() {
 int main() {
     printstr("lib_random Test Suite\n");
     printstr("====================\n");
+    
+#ifdef HOST_TEST_BUILD
+    printstr("Running in HOST TEST mode (some tests may be mocked)\n");
+    srand(12345); // Initialize host random for mocking
+#endif
     
     // Run all tests
     test_random_create_generator_from_seed();
