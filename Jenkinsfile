@@ -53,6 +53,9 @@ pipeline {
                 dir("examples") {
                   xcoreBuild()
                 }
+                dir("tests") {
+                  xcoreBuild()
+                }
               }
             }
           }

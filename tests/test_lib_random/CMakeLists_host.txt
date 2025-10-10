@@ -1,0 +1,29 @@
+# Host Test Build (for basic validation without XMOS tools)
+
+if(NOT DEFINED ENV{XMOS_CMAKE_PATH})
+    message(WARNING "XMOS_CMAKE_PATH not set, building host test version")
+    
+    cmake_minimum_required(VERSION 3.21)
+    project(test_lib_random_host)
+    
+    # Create host-compatible version for basic testing
+    add_executable(test_lib_random_host
+        src/main.c
+        ../../lib_random/src/pr_random.c
+    )
+    
+    target_include_directories(test_lib_random_host PRIVATE
+        ../../lib_random/api
+        ../../lib_random/src
+    )
+    
+    # Mock XMOS-specific functions for host testing
+    target_compile_definitions(test_lib_random_host PRIVATE
+        -DHOST_TEST_BUILD=1
+    )
+    
+    message(STATUS "Built host test version - some tests may be skipped")
+else()
+    # Use the normal XMOS build when tools are available
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt)
+endif()
