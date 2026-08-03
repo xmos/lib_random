@@ -1,100 +1,175 @@
+// This file relates to internal XMOS infrastructure and should be ignored by external users
+ 
 @Library('xmos_jenkins_shared_library@v0.43.0') _
 
 getApproval()
-
 pipeline {
-  agent none
-  
-  options {
-    buildDiscarder(xmosDiscardBuildSettings())
-    skipDefaultCheckout()
-    timestamps()
-  }
 
-  parameters {
-    string(
-      name: 'TOOLS_VERSION',
-      defaultValue: '15.3.1',
-      description: 'The XTC tools version'
-    )
-    string(
-      name: 'XMOSDOC_VERSION',
-      defaultValue: 'v8.0.0',
-      description: 'The xmosdoc version'
-    )
-    string(
-      name: 'INFR_APPS_VERSION',
-      defaultValue: 'v3.1.1',
-      description: 'The infr_apps version'
-    )
-  }
+    agent none
 
-  stages {
-    stage('🏗️ Build and test') {
-      agent {
-        label 'x86_64 && linux && documentation'
-      }
-
-      stages {
-        stage('Build') {
-          steps {
-
-            println "Stage running on ${env.NODE_NAME}"
-
-            script {
-              def (server, user, repo) = extractFromScmUrl()
-              env.REPO_NAME = repo
-            }
-
-            dir(REPO_NAME) {
-              checkoutScmShallow()
-
-              withTools(params.TOOLS_VERSION) {
-                dir("examples") {
-                  xcoreBuild()
-                }
-              }
-            }
-          }
-        } // Build
-
-        stage('Library checks') {
-          steps {
-            warnError("Repo checks failed") {
-              runRepoChecks("${WORKSPACE}/${REPO_NAME}")
-            }
-          }
-        }
-
-        stage('Documentation') {
-          steps {
-            dir(REPO_NAME) {
-              buildDocs()
-            }
-          }
-        }
-
-        stage("Archive sandbox") {
-          steps {
-            archiveSandbox(REPO_NAME)
-          }
-        }
-
-      } // stages
-      post {
-        cleanup {
-          xcoreCleanSandbox()
-        }
-      }
-    } // stage 'Build and test'
-    
-    stage('🚀 Release') {
-      when {
-        expression { triggerRelease.isReleasable() }
-      }
-      steps {
-        triggerRelease()
-      }
+    parameters {
+        string(
+            name: 'TOOLS_VERSION',
+            defaultValue: '15.3.1',
+            description: 'XTC tools version'
+        )
+        string(
+            name: 'XMOSDOC_VERSION',
+            defaultValue: 'v7.4.0',
+            description: 'xmosdoc version'
+        )
+        string(
+            name: 'INFR_APPS_VERSION',
+            defaultValue: 'v3.1.1',
+            description: 'The infr_apps version'
+        )
     }
-  }
-}
+
+    options {
+        skipDefaultCheckout()
+        timestamps()
+        buildDiscarder(xmosDiscardBuildSettings(onlyArtifacts = false))
+    }
+
+    stages {
+        stage('🏗️ Build & Test') {
+            parallel {
+                stage('🏗️ Build and sim tests') {
+                    agent { label 'x86_64 && linux && documentation' }
+                    stages {
+                        stage('Checkout') {
+                            steps {
+                                println "Stage running on ${env.NODE_NAME}"
+                                script {
+                                    def (server, user, repo) = extractFromScmUrl()
+                                    env.REPO_NAME = repo
+                                }
+                                dir(REPO_NAME) {
+                                    checkoutScmShallow()
+                                }
+                            }
+                        }
+
+                        stage('Examples build') {
+                            steps {
+                                dir("${REPO_NAME}/examples") {
+                                    xcoreBuild()
+                                }
+                            }
+                        }
+
+                        stage('Repo checks') {
+                            steps {
+                                warnError("Repo checks failed") {
+                                    runRepoChecks("${WORKSPACE}/${REPO_NAME}")
+                                }
+                            }
+                        }
+
+                        stage('Doc build') {
+                            steps {
+                                dir(REPO_NAME) {
+                                    buildDocs()
+                                }
+                            }
+                        }
+
+                        stage('Sim tests') {
+                            steps {
+                                dir("${REPO_NAME}/tests") {
+                                    withTools(params.TOOLS_VERSION) {
+                                        createVenv(reqFile: "requirements.txt")
+                                        withVenv {
+                                            xcoreBuild(archiveBins: false)
+                                            sh "pytest -k _xsim -vv -n auto --junitxml=pytest_result.xml"
+                                        }
+                                    }
+                                }
+                                junit "${REPO_NAME}/tests/**/pytest_*.xml"
+                            }
+                        }
+
+                        stage("Archive sandbox") {
+                            steps {
+                                archiveSandbox(REPO_NAME)
+                            }
+                        }
+                    }
+                    post {
+                        cleanup {
+                            xcoreCleanSandbox()
+                        }
+                    }
+                } // stage Build and test
+
+                stage('🏗️ Build and hardware tests') {
+                    agent { label 'xcore.ai' }
+                    stages {
+                        stage('Checkout') {
+                            steps {
+                                println "Stage running on ${env.NODE_NAME}"
+                                script {
+                                    def (server, user, repo) = extractFromScmUrl()
+                                    env.REPO_NAME = repo
+                                }
+                                dir(REPO_NAME) {
+                                    checkoutScmShallow()
+                                    sh 'git submodule update --init --recursive --depth 1'
+                                 }
+                            }
+                        }
+                        stage('Build Analysis SW') {
+                            agent {
+                                dockerfile {
+                                    filename "${REPO_NAME}/Dockerfile"
+                                    reuseNode true
+                                }
+                            }
+                            steps {
+                                dir("${REPO_NAME}/submodules/SP800-90B_EntropyAssessment/cpp") {
+                                    sh '(cd /lib/x86_64-linux-gnu; tar cf - libdivsu*) | tar xf -'
+                                    sh 'make -k'
+                                }
+                            }
+                        }
+
+                        stage('Verif HW random') {
+                            steps {
+                                dir("${REPO_NAME}/tests") {
+                                    withTools(params.TOOLS_VERSION) {
+                                        createVenv(reqFile: "requirements.txt")
+                                        withVenv {
+                                            xcoreBuild(archiveBins: false)
+                                            sh "pytest -k _hw  -vv -s test_hw.py --junitxml=pytest_result.xml"
+                                        }
+                                    }
+                                }
+                                junit "${REPO_NAME}/tests/**/pytest_*.xml"
+                            }
+                        }
+
+                        stage("Archive sandbox") {
+                            steps {
+                                archiveSandbox(REPO_NAME)
+                            }
+                        }
+                    }
+                    post {
+                        cleanup {
+                            xcoreCleanSandbox()
+                        }
+                    }
+                } // stage Test HW
+            } // parallel
+        }
+
+        stage('🚀 Release') {
+            when {
+                expression { triggerRelease.isReleasable() }
+            }
+            steps {
+                triggerRelease()
+            }
+        }
+    }
+} // pipeline

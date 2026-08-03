@@ -1,0 +1,3 @@
+[submodule "submodules/SP800-90B_EntropyAssessment"]
+	path = submodules/SP800-90B_EntropyAssessment
+	url = git@github.com:xmos/SP800-90B_EntropyAssessment.git

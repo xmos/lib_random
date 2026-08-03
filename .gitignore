@@ -40,3 +40,7 @@
 # Built documentation
 doc/_build/pdf/*.pdf
 **/doc/pdf/*.pdf
+
+
+tests/pytest_result.xml
+tests/xrun.lock

@@ -1,10 +1,10 @@
-// Copyright 2016-2025 XMOS LIMITED.
+// Copyright 2016-2026 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 #include <xs1.h>
 #include "random.h"
 #include "random_internal.h"
 
-#define crc32(a,b,c)  asm("crc32 %0, %1, %2" : "+r" (a) : "r" (c), "r" (b))
+#define crc32(a,b,c)  asm("crc32 %0, %1, %2" : "+r" (a) : "r" (b), "r" (c))
 
 static const unsigned random_poly = 0xEDB88320;
 
